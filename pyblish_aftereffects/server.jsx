@@ -1,10 +1,19 @@
+﻿// start pyblish lite
+var port = Math.floor((Math.random() * 1000) + 8000);
+var cmd = "python -m pyblish_standalone --register-gui pyblish_lite --port " + port
+var batFile= new File("~/pyblish_aftereffects.bat");
+batFile.open("w");
+batFile.write(cmd);
+batFile.close();
+batFile.execute();
+
 // create a new socket
 conn = new Socket();
 
 var keep_serving = true;
 
 while (keep_serving) {
-    if (conn.listen(8789))  // ... you'd probably want to make this configurable
+    if (conn.listen(port))  // ... you'd probably want to make this configurable
     {
         // wait forever for a connection
         var incoming;
