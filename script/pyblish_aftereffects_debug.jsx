@@ -3,7 +3,7 @@ var port = Math.floor((Math.random() * 1000) + 8000);
 $.setenv("PYBLISH_AFTEREFFECTS_PORT", port);
 
 // start pyblish lite
-var cmd = "start pythonw -m pyblish_standalone --register-gui pyblish_lite"
+var cmd = "start python -m pyblish_standalone --register-gui pyblish_lite"
 var batFile= new File("~/pyblish_aftereffects.bat");
 batFile.open("w");
 batFile.write(cmd);
