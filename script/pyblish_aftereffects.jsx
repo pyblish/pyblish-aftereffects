@@ -1,6 +1,9 @@
-﻿// start pyblish lite
+﻿// settting port environment variable
 var port = Math.floor((Math.random() * 1000) + 8000);
-var cmd = "python -m pyblish_standalone --register-gui pyblish_lite --port " + port
+$.setenv("PYBLISH_AFTEREFFECTS_PORT", port);
+
+// start pyblish lite
+var cmd = "python -m pyblish_standalone --register-gui pyblish_lite"
 var batFile= new File("~/pyblish_aftereffects.bat");
 batFile.open("w");
 batFile.write(cmd);
@@ -24,7 +27,8 @@ while (keep_serving) {
         new_cmd = incoming.read();
         try {
             var F = new Function (new_cmd);
-            incoming.writeln(F());
+            var results = F();
+            incoming.writeln(results);
         }
         catch (err) {
             incoming.writeln(err + "FAIL\n");
