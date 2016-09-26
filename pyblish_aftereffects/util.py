@@ -13,6 +13,10 @@ def send(msg, port=None):
     conn.send(msg)
     r = conn.recv(4096)
     conn.close()
+
+    if r.startswith("Error: "):
+        raise ValueError(r.replace("Error: ", ""))
+
     return r
 
 

@@ -3,7 +3,12 @@ var port = Math.floor((Math.random() * 1000) + 8000);
 $.setenv("PYBLISH_AFTEREFFECTS_PORT", port);
 
 // start pyblish lite
-var cmd = "start pythonw -m pyblish_standalone --register-gui pyblish_lite"
+var filename = ""
+try{
+    filename = app.project.file.fsName
+}catch(err){}
+
+var cmd = "start pythonw -m pyblish_standalone \"" + filename + "\" --register-gui pyblish_lite --register-host aftereffects"
 var batFile= new File("~/pyblish_aftereffects.bat");
 batFile.open("w");
 batFile.write(cmd);
@@ -31,9 +36,7 @@ while (keep_serving) {
             incoming.writeln(results);
         }
         catch (err) {
-            incoming.writeln(err + "FAIL\n");
-            incoming.close();
-            delete incoming;
+            incoming.writeln("Error: " + err.toString());
         }
     } // end if
 } // -- end while
