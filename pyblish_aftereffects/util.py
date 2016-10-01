@@ -2,22 +2,42 @@ import os
 import socket
 
 
-def send(msg, port=None):
+def send(cmd, port=None):
 
     host = '127.0.0.1'
     if not port:
         port = int(os.environ["PYBLISH_AFTEREFFECTS_PORT"])
 
-    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.connect((host, port))
-    conn.send(msg)
-    r = conn.recv(4096)
-    conn.close()
+    # we expect a result no matter if it errors, so we keep trying until we
+    # get a reply. This is slow, but relyable.
+    keep_trying = True
+    result = ""
+    while(keep_trying):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect((host, port))
+        conn.send(cmd)
+        try:
+            result = conn.recv(4096)
+            conn.close()
+            if result:
+                keep_trying = False
+        except:
+            pass
 
-    if r.startswith("Error: "):
-        raise ValueError(r.replace("Error: ", ""))
+    # raise error
+    if result.startswith("Error: "):
+        msg = result.replace("Error: ", "")
+        msg += "CMD: " + cmd
+        raise ValueError(msg)
 
-    return r
+    # all replies comes in with a newline
+    result = result.replace("\n", "")
+
+    # more Pythonic return of nothing
+    if result == "undefined":
+        return None
+
+    return result
 
 
 def stop_server(port=None):
